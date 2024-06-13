@@ -126,7 +126,11 @@ def _register_pytree_dataclass(cls: Type[T]) -> Type[T]:
             **{key: tdef for key, tdef in zip(field_info.static_field_names, treedef)},
         )
 
-    tree_util.register_pytree_node(cls, _flatten, _unflatten)
+    tree_util.register_pytree_node(
+        cls,
+        getattr(cls, "_flatten", _flatten),
+        getattr(cls, "_unflatten", _unflatten),
+    )
 
     # Serialization: this is mostly copied from `flax.struct.dataclass`.
     if serialization is not None:
